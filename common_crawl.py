@@ -18,9 +18,9 @@ from warcio.archiveiterator import ArchiveIterator
 
 CRAWL = "CC-MAIN-2026-25"
 
-DOMAIN = "setopati.com"
+DOMAIN = "onlinekhabar.com"
 
-MAX_PAGES = 100
+# MAX_PAGES = 100
 
 OUTPUT_DIR = Path("nepali_corpus")
 
@@ -35,18 +35,46 @@ INDEX_URL = (
 
 DATA_URL = "https://data.commoncrawl.org/"
 
+# ============================================================
+# CHECK FOR DUPLICATE URL
+# ============================================================
+def deduplicate_records(records):
+    """
+    Keep only one Common Crawl record per article URL.
+
+    If the same URL appears multiple times in the index,
+    keep the first record encountered.
+    """
+
+    unique = {}
+
+    for record in records:
+
+        url = record.get("url")
+
+        if not url:
+            continue
+
+        # Remove URL fragments
+        url = url.split("#", 1)[0]
+
+        if url not in unique:
+            unique[url] = record
+
+    return list(unique.values())
 
 # ============================================================
 # QUERY COMMON CRAWL
 # ============================================================
 
-def query_commoncrawl(domain, limit=100):
+# def query_commoncrawl(domain, limit=100): // uses the limit parameter
+def query_commoncrawl(domain):
 
     params = {
         "url": f"{domain}/*",
         "output": "json",
         "filter": "status:200",
-        "limit": limit,
+        # "limit": limit,
     }
 
     response = requests.get(
@@ -266,13 +294,23 @@ def main():
         f"Searching Common Crawl: {DOMAIN}"
     )
 
+    # records = query_commoncrawl(
+    #     DOMAIN,
+    #     MAX_PAGES,
+    # )
+
     records = query_commoncrawl(
         DOMAIN,
-        MAX_PAGES,
     )
 
     print(
         f"Found {len(records)} records"
+    )
+
+    records = deduplicate_records(records)
+
+    print(
+        f"Found {len(records)} unique URLs"
     )
 
     saved = 0
