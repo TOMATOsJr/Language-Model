@@ -3,7 +3,7 @@ import glob
 from collections import Counter
 
 
-INPUT_DIR = "hindi_chunks"
+INPUT_DIR = "../hindi_chunks"
 
 
 def main():

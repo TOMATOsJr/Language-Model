@@ -2,8 +2,8 @@ import json
 from pathlib import Path
 
 
-INPUT_DIR = Path("./hindi_corpus").resolve()
-OUTPUT_FILE = Path("./combined_hindi_corpus.jsonl").resolve()
+INPUT_DIR = Path("../hindi_corpus").resolve()
+OUTPUT_FILE = Path("../combined_hindi_corpus.jsonl").resolve()
 
 
 def main():

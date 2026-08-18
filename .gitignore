@@ -1,3 +1,5 @@
 setupati_extract/*
-hindi/datasets/*
-nepali/datasets/*
+*.jsonl
+*.csv
+*.json
+*.txt

@@ -3,8 +3,8 @@ import glob
 import os
 
 
-INPUT_DIR = "./dataset/hindi_chunks"
-OUTPUT_FILE = "hindi_only.csv"
+INPUT_DIR = "../hindi_chunks"
+OUTPUT_FILE = "../hindi_only.csv"
 
 
 def main():

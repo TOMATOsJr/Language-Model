@@ -11,7 +11,7 @@ MAX_WORKERS = 12          # concurrent duckdb queries against Common Crawl. Star
                            # higher, but too many parallel remote parquet scans can start
                            # tripping timeouts/throttling. Tune based on what you observe.
 RETRIES = 3                # per-partition retry attempts on transient network errors
-OUTPUT_DIR = "nepali_chunks"
+OUTPUT_DIR = "../nepali_chunks"
 
 print_lock = Lock()
 
