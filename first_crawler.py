@@ -38,13 +38,14 @@ REQUEST_DELAY = 0.5
 
 # Number of category pages to inspect.
 # Set to None to continue until pages stop producing articles.
-# MAX_PAGES_PER_CATEGORY = 100
+MAX_PAGES_PER_CATEGORY = 100
 
 USER_AGENT = (
     "NepaliCorpusResearch/1.0 "
     "(academic language-corpus project)"
 )
 
+TOTAL_WORDS = 0
 
 # ---------------------------------------------------------
 # Database
@@ -150,6 +151,10 @@ async def fetch(session, url, limiter, robots):
 
                 status = response.status
 
+                print(
+                    f"[fetch] {url} -> {status}"
+                )
+
                 if status == 200:
                     text = await response.text(
                         errors="replace"
@@ -238,11 +243,11 @@ async def crawl_category(
 
     while True:
 
-        # if (
-        #     MAX_PAGES_PER_CATEGORY is not None
-        #     and page > MAX_PAGES_PER_CATEGORY
-        # ):
-        #     break
+        if (
+            MAX_PAGES_PER_CATEGORY is not None
+            and page > MAX_PAGES_PER_CATEGORY
+        ):
+            break
 
         if page == 1:
             url = f"{BASE_URL}/{category}"
@@ -550,9 +555,13 @@ async def process_article(
 
     await db.commit()
 
+    no_words = len(article["text"].split())
+    TOTAL_WORDS += no_words
+
     print(
         f"[OK] {url} "
         f"chars={len(article['text'])}"
+        f"words={no_words}"
     )
 
 

@@ -1,1 +1,19 @@
-[![Review Assignment Due Date](https://classroom.github.com/assets/deadline-readme-button-22041afd0340ce965d47ae6ef1cefeee28c7c493a6346c4f15d667ab976d596c.svg)](https://classroom.github.com/a/Q6gOCxoh)
+## Dataset Accumulation
+### Prebuilt corpus
+1. Sangraha Nepali Corpus - Extracted 500M words
+2. Sangraha Hindi Corpus - Extracted 500M words
+
+### Manual collection
+#### Consideration
+1. NewsPaper Scraping
+2. Government sites Scraping
+3. Literature scraping (if possible and if necessary)
+4. Open subtitles (seems to be a good idea)
+
+#### Actually done
+Data extraction from common crawl which includes all kind
+of scraping of the web over various domains.
+
+Performed extraction of the URLs using the duckdb database and
+got the warc record offsets and later extracted the relevant
+text out of these sites using trafilatura efficiently.
