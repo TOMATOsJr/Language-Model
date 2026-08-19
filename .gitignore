@@ -3,3 +3,8 @@ setupati_extract/*
 *.csv
 *.json
 *.txt
+*__pycache__/
+venv/*
+kenlm-venv/*
+*.arpa
+*.binary
