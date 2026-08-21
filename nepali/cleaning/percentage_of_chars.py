@@ -1,6 +1,6 @@
 import json
 
-INPUT = "./datasets/cleaned2.jsonl"
+INPUT = "./datasets/cleaned_ppl.jsonl"
 
 total_alpha = 0
 devanagari_alpha = 0

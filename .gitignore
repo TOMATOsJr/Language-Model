@@ -8,3 +8,6 @@ venv/*
 kenlm-venv/*
 *.arpa
 *.binary
+*.model
+*.vocab
+*_unique_chars.tsv
