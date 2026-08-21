@@ -1,3 +1,6 @@
+## Phase - 1 submission link
+[LMA_dataset](https://iiithydresearch-my.sharepoint.com/:f:/g/personal/jayanth_raju_research_iiit_ac_in/IgAX6U0juLSJTpCXe1W4Y8AfAbDCv1lgB6owA7AOWL0khfI?e=ns13lO)
+
 # Hindi/Nepali Language Modeling Corpus
 
 A data-processing and tokenizer-training pipeline for building a large-scale Hindi/Nepali corpus from manually curated and Sangraha/Common Crawl-derived text.
