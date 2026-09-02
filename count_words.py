@@ -3,8 +3,17 @@ import argparse
 
 total_word_count = 0
 
-parser = argparse.ArgumentParser(description="Count words in text files")
-parser.add_argument("-d", "--directory", type=str, default = "nepali_corpus", help="Directory containing text files")
+parser = argparse.ArgumentParser(
+    description="Count words in text files"
+)
+
+parser.add_argument(
+    "-d",
+    "--directory",
+    type=str,
+    default = "nepali_corpus",
+    help="Directory containing text files"
+)
 
 args = parser.parse_args()
 

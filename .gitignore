@@ -11,3 +11,4 @@ kenlm-venv/*
 *.model
 *.vocab
 *_unique_chars.tsv
+*.bin
