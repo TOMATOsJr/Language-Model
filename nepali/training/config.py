@@ -10,11 +10,11 @@ LANGUAGE_DIR = Path(__file__).resolve().parents[1]
 
 @dataclass
 class ModelConfig:
-    vocab_size: int = 8000
+    vocab_size: int = 10_000
     dmodel: int = 384
     num_layers: int = 12
     num_heads: int = 6
-    dff: int = 1600
+    dff: int = 1536
     dropout: float = 0.0
     context_length: int = 512
     pad_id: int = 0

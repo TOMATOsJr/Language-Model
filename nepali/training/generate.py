@@ -13,7 +13,7 @@ from nepali.training.config import ModelConfig
 from nepali.training.model import TransformerLM
 
 LANGUAGE_DIR = Path(__file__).resolve().parents[1]
-DEFAULT_TOKENIZER = LANGUAGE_DIR / "tokenizers" / "unigram_8000.model"
+DEFAULT_TOKENIZER = LANGUAGE_DIR / "tokenizers" / "unigram_10000.model"
 
 
 def load_model(checkpoint_path, model_cfg, device):

@@ -5,7 +5,7 @@ Datasets and Data Loaders for Nepali Language Modeling.
 from pathlib import Path
 
 import numpy as np
-from sympy import re
+# from sympy import re
 import torch
 from torch.utils.data import Dataset, DataLoader
 
