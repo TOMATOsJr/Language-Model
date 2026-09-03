@@ -15,7 +15,7 @@ class ModelConfig:
     num_layers: int = 12
     num_heads: int = 6
     dff: int = 1536
-    dropout: float = 0.0
+    dropout: float = 0.1
     context_length: int = 512
     pad_id: int = 0
 
@@ -31,7 +31,7 @@ class TrainConfig:
     micro_batch_size: int = 32
     grad_accum_steps: int = 2          # 32 * 512 * 2 = 32,768 tokens/update
 
-    max_steps: int = 15260             # ~500M tokens at 32,768 tokens/update
+    max_steps: int = 61040             # 4 epochs (~2B tokens) at 32,768 tokens/update
     warmup_steps: int = 500
     peak_lr: float = 3e-4
     min_lr: float = 3e-5
