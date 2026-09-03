@@ -50,11 +50,15 @@ def build_optimizer(model, weight_decay, lr, betas, eps):
     return torch.optim.AdamW(param_groups, lr=lr, betas=betas, eps=eps)
 
 
+def unwrap_model(model):
+    return model._orig_mod if hasattr(model, "_orig_mod") else model
+
+
 def save_checkpoint(path, model, optimizer, step, val_loss):
     torch.save(
         {
             "step": step,
-            "model_state_dict": model.state_dict(),
+            "model_state_dict": unwrap_model(model).state_dict(),
             "optimizer_state_dict": optimizer.state_dict(),
             "val_loss": val_loss,
         },
@@ -103,6 +107,9 @@ def train():
     num_params = sum(p.numel() for p in model.parameters())
     print(f"Model parameters: {num_params:,}")
 
+    if device == "cuda" and train_cfg.compile_model:
+        model = torch.compile(model)
+
     optimizer = build_optimizer(
         model,
         train_cfg.weight_decay,
@@ -111,7 +118,13 @@ def train():
         train_cfg.adam_eps,
     )
 
-    use_bf16 = device == "cuda" and torch.cuda.is_bf16_supported()
+    def supports_native_bf16():
+        if not torch.cuda.is_available():
+            return False
+        major, _ = torch.cuda.get_device_capability()
+        return major >= 8 and torch.cuda.is_bf16_supported()
+
+    use_bf16 = supports_native_bf16()
     autocast_dtype = torch.bfloat16 if use_bf16 else torch.float16
     scaler = torch.cuda.amp.GradScaler(enabled=(device == "cuda" and not use_bf16))
 
@@ -186,7 +199,7 @@ def train():
     )
 
     best_checkpoint = torch.load(train_cfg.checkpoint_dir / "best.pt", map_location=device)
-    model.load_state_dict(best_checkpoint["model_state_dict"])
+    unwrap_model(model).load_state_dict(best_checkpoint["model_state_dict"])
 
     test_loss, test_ppl = evaluate_loader(model, test_loader, device, max_batches=None)
     print(f"TEST  loss={test_loss:.4f}  perplexity={test_ppl:.2f}")

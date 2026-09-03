@@ -118,7 +118,13 @@ def train():
         train_cfg.adam_eps,
     )
 
-    use_bf16 = device == "cuda" and torch.cuda.is_bf16_supported()
+    def supports_native_bf16():
+        if not torch.cuda.is_available():
+            return False
+        major, _ = torch.cuda.get_device_capability()
+        return major >= 8 and torch.cuda.is_bf16_supported()
+
+    use_bf16 = supports_native_bf16()
     autocast_dtype = torch.bfloat16 if use_bf16 else torch.float16
     scaler = torch.cuda.amp.GradScaler(enabled=(device == "cuda" and not use_bf16))
 

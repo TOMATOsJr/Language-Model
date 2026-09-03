@@ -28,8 +28,8 @@ class TrainConfig:
 
     checkpoint_dir: Path = LANGUAGE_DIR / "training" / "checkpoints"
 
-    micro_batch_size: int = 16
-    grad_accum_steps: int = 4          # 16 * 512 * 4 = 32,768 tokens/update
+    micro_batch_size: int = 32
+    grad_accum_steps: int = 2          # 32 * 512 * 2 = 32,768 tokens/update
 
     max_steps: int = 15260             # ~500M tokens at 32,768 tokens/update
     warmup_steps: int = 500
@@ -41,13 +41,14 @@ class TrainConfig:
     adam_eps: float = 1e-8
     grad_clip_norm: float = 1.0
 
-    eval_every: int = 250
-    eval_max_batches: int = 200        # caps validation cost during training
+    eval_every: int = 500
+    eval_max_batches: int = 100        # evaluates 819,200 tokens per validation pass
     log_every: int = 20
     checkpoint_every: int = 1000
 
     num_workers: int = 4
     seed: int = 42
+    compile_model: bool = True
 
     wandb_project: str = "hindi-25m-lm"
     wandb_run_name: str = "hindi-decoder-25m"

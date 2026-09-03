@@ -28,8 +28,8 @@ class TrainConfig:
 
     checkpoint_dir: Path = LANGUAGE_DIR / "training" / "checkpoints"
 
-    micro_batch_size: int = 16
-    grad_accum_steps: int = 4          # 16 * 512 * 4 = 32,768 tokens/update
+    micro_batch_size: int = 32
+    grad_accum_steps: int = 2          # 32 * 512 * 2 = 32,768 tokens/update
 
     max_steps: int = 15260             # ~500M tokens at 32,768 tokens/update
     warmup_steps: int = 500
