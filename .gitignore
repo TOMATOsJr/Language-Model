@@ -6,9 +6,13 @@ setupati_extract/*
 *__pycache__/
 venv/*
 kenlm-venv/*
+.env
 *.arpa
 *.binary
 *.model
 *.vocab
 *_unique_chars.tsv
 *.bin
+*.pt
+*.sh
+*wandb/

@@ -3,7 +3,9 @@ Training loop for the Hindi 25M-parameter decoder-only transformer.
 """
 
 import math
+from pathlib import Path
 
+from dotenv import load_dotenv
 import torch
 import torch.nn.functional as F
 import wandb
@@ -14,6 +16,9 @@ from hindi.training.config import ModelConfig, TrainConfig
 from hindi.training.data import TokenStreamDataset
 from hindi.training.evaluate import evaluate_loader
 from hindi.training.model import TransformerLM
+
+
+load_dotenv(Path(__file__).resolve().parents[2] / ".env")
 
 
 def infinite_loader(loader):
