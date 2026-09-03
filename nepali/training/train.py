@@ -50,11 +50,15 @@ def build_optimizer(model, weight_decay, lr, betas, eps):
     return torch.optim.AdamW(param_groups, lr=lr, betas=betas, eps=eps)
 
 
+def unwrap_model(model):
+    return model._orig_mod if hasattr(model, "_orig_mod") else model
+
+
 def save_checkpoint(path, model, optimizer, step, val_loss):
     torch.save(
         {
             "step": step,
-            "model_state_dict": model.state_dict(),
+            "model_state_dict": unwrap_model(model).state_dict(),
             "optimizer_state_dict": optimizer.state_dict(),
             "val_loss": val_loss,
         },
@@ -102,6 +106,9 @@ def train():
 
     num_params = sum(p.numel() for p in model.parameters())
     print(f"Model parameters: {num_params:,}")
+
+    if device == "cuda" and train_cfg.compile_model:
+        model = torch.compile(model)
 
     optimizer = build_optimizer(
         model,
@@ -186,7 +193,7 @@ def train():
     )
 
     best_checkpoint = torch.load(train_cfg.checkpoint_dir / "best.pt", map_location=device)
-    model.load_state_dict(best_checkpoint["model_state_dict"])
+    unwrap_model(model).load_state_dict(best_checkpoint["model_state_dict"])
 
     test_loss, test_ppl = evaluate_loader(model, test_loader, device, max_batches=None)
     print(f"TEST  loss={test_loss:.4f}  perplexity={test_ppl:.2f}")

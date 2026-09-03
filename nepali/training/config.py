@@ -41,13 +41,14 @@ class TrainConfig:
     adam_eps: float = 1e-8
     grad_clip_norm: float = 1.0
 
-    eval_every: int = 250
-    eval_max_batches: int = 200        # caps validation cost during training
+    eval_every: int = 500
+    eval_max_batches: int = 100        # evaluates 819,200 tokens per validation pass
     log_every: int = 20
     checkpoint_every: int = 1000
 
     num_workers: int = 4
     seed: int = 42
+    compile_model: bool = True
 
     wandb_project: str = "nepali-25m-lm"
     wandb_run_name: str = "nepali-decoder-25m"
