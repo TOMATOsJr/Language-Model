@@ -44,7 +44,6 @@ class TrainConfig:
     eval_every: int = 500
     eval_max_batches: int = 100        # evaluates 819,200 tokens per validation pass
     log_every: int = 20
-    checkpoint_every: int = 1000
 
     num_workers: int = 4
     seed: int = 42

@@ -213,9 +213,6 @@ def train():
                     best_val_loss = val_loss
                     save_checkpoint(train_cfg.checkpoint_dir / "best.pt", model, optimizer, step, val_loss)
 
-        if master_process and step % train_cfg.checkpoint_every == 0:
-            save_checkpoint(train_cfg.checkpoint_dir / f"step_{step}.pt", model, optimizer, step, None)
-
     # Final report uses the best validation checkpoint, evaluated once on the full held-out test set.
     if master_process:
         test_dataset = TokenStreamDataset(train_cfg.test_bin, context_length=model_cfg.context_length)
