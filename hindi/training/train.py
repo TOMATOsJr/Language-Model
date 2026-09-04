@@ -4,6 +4,7 @@ Training loop for the Hindi 25M-parameter decoder-only transformer.
 
 import math
 import os
+from dataclasses import asdict
 from pathlib import Path
 
 from dotenv import load_dotenv
@@ -59,12 +60,34 @@ def unwrap_model(model):
     return model._orig_mod if hasattr(model, "_orig_mod") else model
 
 
-def save_checkpoint(path, model, optimizer, step, val_loss):
+def config_to_dict(config):
+    return {
+        name: str(value) if isinstance(value, Path) else value
+        for name, value in asdict(config).items()
+    }
+
+
+def scheduler_state(step, train_cfg):
+    return {
+        "type": "cosine_decay_with_linear_warmup",
+        "step": step,
+        "warmup_steps": train_cfg.warmup_steps,
+        "max_steps": train_cfg.max_steps,
+        "peak_lr": train_cfg.peak_lr,
+        "min_lr": train_cfg.min_lr,
+    }
+
+
+def save_checkpoint(path, model, optimizer, scaler, step, val_loss, model_cfg, train_cfg):
     torch.save(
         {
             "step": step,
             "model_state_dict": unwrap_model(model).state_dict(),
             "optimizer_state_dict": optimizer.state_dict(),
+            "scheduler_state_dict": scheduler_state(step, train_cfg),
+            "scaler_state_dict": scaler.state_dict(),
+            "model_config": config_to_dict(model_cfg),
+            "train_config": config_to_dict(train_cfg),
             "val_loss": val_loss,
         },
         path,
@@ -155,6 +178,21 @@ def train():
     autocast_dtype = torch.bfloat16 if use_bf16 else torch.float16
     scaler = torch.cuda.amp.GradScaler(enabled=(device.startswith("cuda") and not use_bf16))
 
+    latest_checkpoint_path = train_cfg.checkpoint_dir / "latest.pt"
+    best_checkpoint_path = train_cfg.checkpoint_dir / "best.pt"
+    start_step = 1
+    best_val_loss = float("inf")
+    if train_cfg.resume_from_latest and latest_checkpoint_path.exists():
+        checkpoint = torch.load(latest_checkpoint_path, map_location=device, weights_only=False)
+        unwrap_model(model).load_state_dict(checkpoint["model_state_dict"])
+        optimizer.load_state_dict(checkpoint["optimizer_state_dict"])
+        if "scaler_state_dict" in checkpoint:
+            scaler.load_state_dict(checkpoint["scaler_state_dict"])
+        start_step = checkpoint["step"] + 1
+        best_val_loss = checkpoint["val_loss"]
+        if master_process:
+            print(f"Resuming from {latest_checkpoint_path} at step {start_step}")
+
     if master_process:
         train_cfg.checkpoint_dir.mkdir(parents=True, exist_ok=True)
         wandb.init(
@@ -164,9 +202,8 @@ def train():
         )
 
     data_iter = infinite_loader(train_loader)
-    best_val_loss = float("inf")
 
-    progress_bar = tqdm(range(1, train_cfg.max_steps + 1), desc="training", disable=not master_process)
+    progress_bar = tqdm(range(start_step, train_cfg.max_steps + 1), desc="training", disable=not master_process)
     for step in progress_bar:
         lr = lr_at_step(step, train_cfg.warmup_steps, train_cfg.max_steps, train_cfg.peak_lr, train_cfg.min_lr)
         for group in optimizer.param_groups:
@@ -207,11 +244,11 @@ def train():
                 wandb.log({"val/loss": val_loss, "val/perplexity": val_ppl}, step=step)
                 tqdm.write(f"step {step}: val_loss={val_loss:.4f} val_ppl={val_ppl:.2f}")
 
-                save_checkpoint(train_cfg.checkpoint_dir / "latest.pt", model, optimizer, step, val_loss)
+                save_checkpoint(train_cfg.checkpoint_dir / "latest.pt", model, optimizer, scaler, step, val_loss, model_cfg, train_cfg)
 
                 if val_loss < best_val_loss:
                     best_val_loss = val_loss
-                    save_checkpoint(train_cfg.checkpoint_dir / "best.pt", model, optimizer, step, val_loss)
+                    save_checkpoint(best_checkpoint_path, model, optimizer, scaler, step, val_loss, model_cfg, train_cfg)
 
     # Final report uses the best validation checkpoint, evaluated once on the full held-out test set.
     if master_process:

@@ -48,6 +48,7 @@ class TrainConfig:
     num_workers: int = 4
     seed: int = 42
     compile_model: bool = True
+    resume_from_latest: bool = False
 
     wandb_project: str = "hindi-25m-lm"
     wandb_run_name: str = "hindi-decoder-25m"
