@@ -130,6 +130,11 @@ def train():
         pin_memory=(device == "cuda"),
         drop_last=True,
     )
+    steps_per_epoch = math.ceil(len(train_loader) / grad_accum_steps)
+    if master_process:
+        print(f"Steps per epoch: {steps_per_epoch:,}")
+
+
     val_loader = DataLoader(
         val_dataset,
         batch_size=train_cfg.micro_batch_size,
@@ -230,6 +235,24 @@ def train():
 
         scaler.step(optimizer)
         scaler.update()
+
+        if master_process and step % steps_per_epoch == 0:
+            epoch = step // steps_per_epoch
+
+            save_checkpoint(
+                train_cfg.checkpoint_dir / f"epoch_{epoch:02d}.pt",
+                model,
+                optimizer,
+                scaler,
+                step,
+                val_loss=float("nan"),
+                model_cfg=model_cfg,
+                train_cfg=train_cfg,
+            )
+
+            tqdm.write(
+                f"Saved epoch {epoch} checkpoint at step {step:,}"
+            )
 
         if master_process and step % train_cfg.log_every == 0:
             progress_bar.set_postfix(loss=f"{accumulated_loss:.4f}", lr=f"{lr:.2e}")
