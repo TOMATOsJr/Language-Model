@@ -134,7 +134,6 @@ def train():
     if master_process:
         print(f"Steps per epoch: {steps_per_epoch:,}")
 
-
     val_loader = DataLoader(
         val_dataset,
         batch_size=train_cfg.micro_batch_size,
