@@ -14,6 +14,7 @@ from torch.nn.parallel import DistributedDataParallel as DDP
 import torch.nn.functional as F
 import wandb
 from torch.utils.data import DataLoader
+from torch.utils.data.distributed import DistributedSampler
 from tqdm import tqdm
 
 from hindi.training.config import ModelConfig, TrainConfig
@@ -25,11 +26,14 @@ from hindi.training.model import TransformerLM
 load_dotenv(Path(__file__).resolve().parents[2] / ".env")
 
 
-def infinite_loader(loader):
-    # Re-invokes iter(loader) every pass so shuffle=True reshuffles each epoch.
+def infinite_loader(loader, sampler=None):
+    epoch = 0
     while True:
+        if sampler is not None:
+            sampler.set_epoch(epoch)
         for batch in loader:
             yield batch
+        epoch += 1
 
 
 def lr_at_step(step, warmup_steps, max_steps, peak_lr, min_lr):
@@ -122,10 +126,24 @@ def train():
     train_dataset = TokenStreamDataset(train_cfg.train_bin, context_length=model_cfg.context_length)
     val_dataset = TokenStreamDataset(train_cfg.validation_bin, context_length=model_cfg.context_length)
 
+    train_sampler = (
+        DistributedSampler(
+            train_dataset,
+            num_replicas=world_size,
+            rank=rank,
+            shuffle=True,
+            seed=train_cfg.seed,
+            drop_last=True,
+        )
+        if is_ddp
+        else None
+    )
+
     train_loader = DataLoader(
         train_dataset,
         batch_size=train_cfg.micro_batch_size,
-        shuffle=True,
+        shuffle=(train_sampler is None),
+        sampler=train_sampler,
         num_workers=train_cfg.num_workers,
         pin_memory=(device == "cuda"),
         drop_last=True,
@@ -205,7 +223,7 @@ def train():
             config={**vars(model_cfg), **vars(train_cfg)},
         )
 
-    data_iter = infinite_loader(train_loader)
+    data_iter = infinite_loader(train_loader, train_sampler)
 
     progress_bar = tqdm(range(start_step, train_cfg.max_steps + 1), desc="training", disable=not master_process)
     for step in progress_bar:
