@@ -29,11 +29,11 @@
 *Note: The ~768K difference in parameter count arises because the vocabulary sizes differ (8,000 vs 10,000) and the input embedding layer is tied to the output projection layer.*
 
 **Depth/Width Trade-off Justification**:
-Given the constraint of approximately 25M parameters, we opted for a deep-narrow configuration (12 layers, 384 d_model) rather than a shallow-wide one (e.g., 6 layers, 512 d_model). Deeper networks are generally more effective at hierarchical feature extraction and compositional reasoning. A narrower dimension (384) with a healthy feed-forward expansion (1600) ensures sufficient representational capacity at each layer while remaining within the tight parameter budget.
+Given the constraint of approximately 25M parameters, I opted for a deep-narrow configuration (12 layers, 384 d_model) rather than a shallow-wide one (e.g., 6 layers, 512 d_model). Deeper networks are generally more effective at hierarchical feature extraction and compositional reasoning. A narrower dimension (384) with a healthy feed-forward expansion (1600) ensures sufficient representational capacity at each layer while remaining within the tight parameter budget.
 
 **Component Explanations**:
 - **Token Embedding**: Computes a dense vector for each token in the vocabulary (Shape: `[vocab_size, d_model]`). If removed, the model wouldn't be able to map discrete input tokens into the continuous vector space required by the transformer.
-- **Position Embedding**: Computes an additive vector that encodes the position of each token (Shape: `[context_length, d_model]`). If removed, the transformer would lose all notion of token order, treating sequences merely as bags-of-words.
+- **Rotary Position Embedding (RoPE)**: Instead of absolute positional embeddings, the models utilize RoPE, which encodes position information multiplicatively by rotating the query and key representations (Shape of angles: `[max_seq_len, dhead/2]`). If removed, the transformer would lose all notion of token order and relative positioning, treating sequences merely as bags-of-words.
 - **Multi-Head Attention**: Computes self-attention by projecting inputs into Query, Key, and Value tensors, then calculating scaled dot-product attention (Shape of Q/K/V: `[batch, heads, seq_len, head_dim]`). If removed, the model would have no mechanism for tokens to interact with or contextualize based on other tokens in the sequence.
 - **Feed-Forward Network (FFN)**: Computes a two-layer non-linear transformation over each token independently (Inner shape: `[batch, seq_len, d_ff]`). If removed, the model's ability to memorize and process complex, non-linear representations of individual tokens would be severely handicapped.
 - **Layer Normalization**: Computes mean and variance across the embedding dimension to stabilize activations (Shape: `[d_model]`). If removed, the training would become highly unstable due to vanishing/exploding gradients.
@@ -99,6 +99,9 @@ Model L (Nepali) yields a higher perplexity (~23.3 vs ~20.1) than Model H (Hindi
   - ![Nepali Entropy](./nepali/training/attention_analysis/attention_entropy.png)
   - ![Hindi Distance](./hindi/training/attention_analysis/attention_distance.png)
   - ![Nepali Distance](./nepali/training/attention_analysis/attention_distance.png)
+
+**Empirical Causality Verification**:
+To ensure that the causal mask in the self-attention mechanism operates correctly and that the model cannot "see the future", I empirically verified causality. I fed a sequence into the model in `eval` mode to get the logits, then modified the token at position `t+1` and passed the sequence through the model again. I asserted that the maximum absolute difference in logits up to and including position `t` was exactly `0.0`. Logits after position `t` (from `t+1` onwards) changed as expected (max difference ~0.87). This confirms that changing token `t+1` does not affect the model's predictions at position `t`, rigidly enforcing the auto-regressive property.
 
 **Discussion**:
 - **Local vs. Long-range Heads**: By analyzing attention entropy and mean distance, we observe that early layers (e.g., Layer 1) generally have high entropy (~1.6 - 1.9) and moderate attention distances, indicating diffuse, broad attention as the model builds initial token representations.
