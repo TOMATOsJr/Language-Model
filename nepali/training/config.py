@@ -14,7 +14,7 @@ class ModelConfig:
     dmodel: int = 384
     num_layers: int = 12
     num_heads: int = 6
-    dff: int = 1536
+    dff: int = 1600
     dropout: float = 0.1
     context_length: int = 512
     pad_id: int = 0

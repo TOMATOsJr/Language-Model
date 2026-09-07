@@ -5,6 +5,31 @@
 
 A data-processing and tokenizer-training pipeline for building a large-scale Hindi/Nepali corpus from manually curated and Sangraha/Common Crawl-derived text.
 
+## Interactive Inference
+
+Launch the Gradio interface from the repository root to generate text with either the Hindi or Nepali model:
+
+```bash
+source venv/bin/activate
+pip install gradio
+python gradio_app.py
+```
+
+The application uses `hindi/training/checkpoints/best.pt` and
+`nepali/training/checkpoints/best.pt` by default and loads a model only when
+it is selected. Open the local URL printed by Gradio, select a model, enter a
+prompt, and adjust the sampling controls as needed.
+
+To use different checkpoints or make the interface reachable on the network:
+
+```bash
+python gradio_app.py \
+       --hindi-checkpoint /path/to/hindi.pt \
+       --nepali-checkpoint /path/to/nepali.pt \
+       --host 0.0.0.0 \
+       --port 7860
+```
+
 The pipeline covers:
 
 1. Perplexity-based filtering
