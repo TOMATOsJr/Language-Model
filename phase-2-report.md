@@ -53,7 +53,7 @@ Given the constraint of approximately 25M parameters, I opted for a deep-narrow 
 | Test BPB | 0.485 | 0.416 |
 
 **Discussion on the Gap**:
-Model L (Nepali) yields a higher perplexity (~23.3 vs ~20.1) than Model H (Hindi), meaning it is slightly more uncertain per-token. However, it achieves a lower Bits-Per-Byte (BPB) (0.416 vs 0.485). This discrepancy primarily stems from tokenizer fertility. The Nepali tokenizer (vocab of 10K) compresses raw text more efficiently than the Hindi tokenizer (vocab of 8K) per byte. BPB normalizes out these tokenization differences by measuring the information content over the raw bytes of the text rather than arbitrary tokens. At the byte level, the Nepali model compresses the text better, which might be attributed to the quality/domain of the training data or the specific byte structure of the script.
+Model L (Nepali) has higher perplexity than Model H (Hindi) on the test split (23.34 vs 20.13), so it is less certain under its own tokenization. It nevertheless obtains lower BPB (0.416 vs 0.485). Perplexity is measured per tokenizer token and is therefore not directly comparable across the 8K Hindi and 10K Nepali tokenizers, whereas BPB normalizes the negative log-likelihood by the UTF-8 byte length of the original text. The difference is consistent with the Nepali tokenizer and/or corpus allowing more efficient byte-level compression, but the experiment does not isolate a single causal explanation such as vocabulary size or tokenizer fertility.
 
 ### Generation Quality
 
@@ -73,15 +73,32 @@ Model L (Nepali) yields a higher perplexity (~23.3 vs ~20.1) than Model H (Hindi
 - **chrF/chrF++**: Slightly more robust since it relies on character n-grams. It handles morphological variations better (important for rich morphologies in Hindi/Nepali) but still suffers from the single-reference penalty.
 
 **Fluency and Diversity Diagnostics (Qualitative Notes)**:
-- **Greedy Decoding**: Models form locally coherent initial phrases but rapidly degenerate into infinite repetition loops.
-  - *Hindi Example Prefix*: "स्पोर्ट्स डेस्क- भारतीय क्रिकेट में शिखर धवन को कौन नहीं जानता, वर्ल्ड क्रिकेट में अपनी एक अलग ही पहचान बनाकर रखे हुए हैं शिखर धवन, तो वहीं भारतीय वि"
-  - *Hindi Greedy Generation*: "श्लेषक रोहित शर्मा ने भी इस बात की पुष्टि की है कि वह इस साल के अंत में होने वाले वर्ल्ड कप में भी शिखर धवन को नहीं जानते। रोहित शर्मा ने कहा कि वह इस साल के अंत में होने वाले वर्ल्ड कप में भी शिखर धवन को नहीं जानते। रोहित शर्मा ने कहा कि वह इस साल के अंत" (Local grammatical coherence but gets stuck repeating Rohit Sharma's quote).
-  - *Nepali Example Prefix*: "सोल, बैशाख 23 । गुल्मी सम्पर्क समिति दक्षिण कोरियाले सातौँ रेसुंगा खुल्ला भलिवल प्रतियोगिता आयोजना गर्ने भएको छ । दक्षिण"
-  - *Nepali Greedy Generation*: "कोरियाको सोलमा रहेको सोलमा रहेको सोलमा रहेको सोलमा रहेको सोलमा रहेको सोलमा रहेको सोलमा रहेको..." (Immediate repetition loop of "in Seoul").
-- **Temperature 1.0**: Eliminates severe repetitions and maintains high vocabulary diversity. The generated text stays somewhat on-topic domain-wise but tends to drift semantically and hallucinate nonsensical connections over longer sequences.
-  - *Hindi T=1.0 Generation (same prefix)*: "मेन, हैरी ब्रुक को भी क्यों नहीं देखते कि बाघ और शिव लाल ये सिर्फ यादगार शटल है. पर अभी इनको कोई नहीं जानता और भारत में भी इन्हें याद नहीं रहता. क्रिकेट भारत को इस मास्टर कोच को लाना हर किसी के लिए मुश्किल जैसी नहीं है..." (Varied vocabulary, stays in sports domain with "Harry Brook", "coach", but loses logical coherence).
-  - *Nepali T=1.0 Generation (same prefix)*: "कोरिया पठाउन नेपाली राजनितीक पहल, सञ्चार र पर्यटनलाई लक्षित गरि रेसुंगा खुल्ला भलिवल प्रतियोगिता गरिएको गुल्मी सम्पर्क समितिले जनाएको छ । रेसुंगा खुल्ला भलिवल प्रतियोगिता विरलै हुने सो अवसरमा जापान सरकारले काठमाडौ विश्वविद्यालयलाई भ्रमणको लागि १० लाख सिकाउने..." (Maintains long-context vocabulary like "tourism", "committee" but hallucinates facts about the Japanese government and Kathmandu University).
-- **Temperature 1.5**: Pushes diversity to extreme levels but completely degenerates into incoherent gibberish.
+
+The following continuations are sampled from the held-out examples saved by the evaluation script. Each uses a 32-token prefix and generates up to 64 tokens. They illustrate the aggregate repetition and diversity metrics rather than serving as factual continuations of the source documents.
+
+- **Greedy decoding**: This gives the most likely next token at every step. It is initially grammatical and topical, but frequently enters short repetition loops, consistent with the high Repeat-3 values (Hindi: 0.5907; Nepali: 0.6014).
+  - *Hindi prefix*: "डोम्बिवली भारतीय राज्य महाराष्ट्र के ठाणे ज़िले में स्थित एक नगर हैं, जो महाराष्ट्र का सबसे साक्षर शहर और भारत"
+  - *Hindi generation*: "का सबसे बड़ा नगर है। . 1970 में भारत के विभाजन के बाद से भारत के विभाजन के बाद से भारत के विभाजन के बाद से भारत के विभाजन के बाद से..."
+  - *Nepali prefix*: "सोल, बैशाख 23 । गुल्मी सम्पर्क समिति दक्षिण कोरियाले सातौँ रेसुंगा खुल्ला भलिवल प्रतियोगिता आयोजना गर्ने भएको छ । दक्षिण"
+  - *Nepali generation*: "कोरियाको सोलमा रहेको सोलमा रहेको सोलमा रहेको सोलमा रहेको सोलमा रहेको सोलमा रहेको..."
+
+- **Temperature $T=0.5$**: Lower-temperature sampling is a useful compromise. It reduces three-gram repetition substantially relative to greedy decoding (Hindi: 0.2705; Nepali: 0.3129) while preserving more local topicality than higher-temperature sampling. However, it remains conservative and often restates a named entity, event, or sentence frame.
+  - *Hindi prefix*: "इस सप्ताह बॉक्स ऑफिस पर विद्या बालन अभिनीत और श्रीजीत मुखर्जी निर्देशित 'बेगम जान' का प्रदर्शन हुआ। अपने सुमधुर गीत"
+  - *Hindi generation*: "ों और नृत्यों के लिए जाने जाने वाले विद्या बालन अभिनीत फिल्म 'बेगम जान' से अपने अभिनय का लोहा मनवा रहे हैं। विद्या बालन अभिनीत और श्रीजीत मुखर्जी निर्देशित 'बेगम जान' का प्रदर्शन किया गया। इसके बाद विद्या बालन अभिनीत और"
+  - *Nepali prefix*: "काठमाडौं । उत्तर कोरिया र अमेरिकाबीच जुन १२ तारिखमा हुने भनिएको शिखर वार्तामा ढिलाइ हुने भएको छ । अमेरिकी राष्ट्रपति डोनाल्ड ट्रम्पले उत्तर कोरियाली नेता किम"
+  - *Nepali generation*: "जोङ उनसँगको वार्तामा ढिलाइ हुने बताएका छन् । उत्तर कोरियाली नेता किम जोङ उनसँगको वार्तामा ढिलाइ हुने भएको हो । उत्तर कोरियाको विदेश मन्त्रालयका प्रवक्ता वाङ याङले किम जोङ उनसँगको वार्तामा ढिलाइ हुने बताएका हुन् । उत्तर कोरियाले उत्तर कोरियासँग नयाँ"
+
+- **Temperature $T=1.0$**: This setting largely removes the severe repetition loops (Repeat-3: 0.0218 for Hindi and 0.0237 for Nepali) and has high lexical diversity (Distinct-2: 0.8129 and 0.8472). The continuations retain broad domain vocabulary, but longer passages can drift from the source context and introduce unsupported details.
+  - *Hindi prefix*: "इस सप्ताह बॉक्स ऑफिस पर विद्या बालन अभिनीत और श्रीजीत मुखर्जी निर्देशित 'बेगम जान' का प्रदर्शन हुआ। अपने सुमधुर गीत"
+  - *Hindi generation*: "से अभिनीत यह फिल्म बॉक्स ऑफिस पर किसी एक स्थान पर रिलीज हुई है, लेकिन अनिल कपूर की 'मिका\" की बेहतरीन अभिनेत्री लक्ष्मीबाई मलयालम और अन्य कई फिल्मों का प्रदर्शन अकादमी में अच्छी प्रदर्शन रहा है। लक्ष्मीबाई मलयालम, तमिल फिल्म उद्योग में उत्कृष्ट"
+  - *Nepali prefix*: "काठमाडौं । उत्तर कोरिया र अमेरिकाबीच जुन १२ तारिखमा हुने भनिएको शिखर वार्तामा ढिलाइ हुने भएको छ । अमेरिकी राष्ट्रपति डोनाल्ड ट्रम्पले उत्तर कोरियाली नेता किम"
+  - *Nepali generation*: "जोङ उनले अमेरिकासँग लड्न तयारी गरेका छन् । तर उनले अमेरिकासँग संवादका लागि अमेरिका र इरान दुवैले चासो राखेका छैनन् । उत्तर कोरियाली नेता किम जोङले दुई देशका समकक्षीलाई एकै ठाउँमा भेला हुने मौका दिएका छैनन् । अमेरिका र इरानको संयुक्त प्रयासमा अमेरिकासँग वार्ता गर्न पूर्वसम्भावित"
+
+- **Temperature $T=1.5$**: This produces the highest diversity (Distinct-2: 0.9731 for Hindi and 0.9738 for Nepali) and near-zero three-gram repetition, but the low BLEU/ROUGE scores and qualitative inspection indicate substantially reduced local coherence. It is unsuitable when factual or sustained continuation quality matters.
+  - *Hindi prefix*: "इस सप्ताह बॉक्स ऑफिस पर विद्या बालन अभिनीत और श्रीजीत मुखर्जी निर्देशित 'बेगम जान' का प्रदर्शन हुआ। अपने सुमधुर गीत"
+  - *Hindi generation*: "की १० रसलिकायों को दर्शकों के सिनेमाघरों पर तेज अवतार साबित रही अल्का बिकिनीमणिकंदवाली संस्कृत स्टाइलूलीछात्राओं कीजगह जा पहुंची थीं और उनकी देखरेख में रविवार पोस्टर धूम गुप्ता करती शेरधार न बनाए। डैनी अग्रवालावरण पुरस्कार पर कुलदीप ट्रेन्वे सदस्य साकी भुएम गोलीनाथु"
+  - *Nepali prefix*: "काठमाडौं । उत्तर कोरिया र अमेरिकाबीच जुन १२ तारिखमा हुने भनिएको शिखर वार्तामा ढिलाइ हुने भएको छ । अमेरिकी राष्ट्रपति डोनाल्ड ट्रम्पले उत्तर कोरियाली नेता किम"
+  - *Nepali generation*: "जोङ उनको परमाणु प्रयास पुनकारायकालागि पूरा हुन सार्न लागेका हुन् । राष्ट्रपति हुने उक्त सिख बोल्सटा क्षमताको राष्ट्रपति दाबी गर्दै स्वदेशपरकै सहयोगको किन सकारात्मक बुझाएको भन्ने तर्क उनलेचन्द्र पदक रेखा खुम्चाएका हुन् किनभने उत्तर कोरियाली दुवै साथमा राखिहाबो पानी बोकेर बाइबल अध्ययनरत विद्यार्थीहरू त्यसदेशबाट उनि पनिस्कृत"
 
 ### Attention Analysis
 
