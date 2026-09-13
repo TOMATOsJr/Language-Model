@@ -16,3 +16,4 @@ kenlm-venv/*
 *.pt
 *.sh
 *wandb/
+.gradio/
