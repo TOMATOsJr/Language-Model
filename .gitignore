@@ -2,6 +2,7 @@ setupati_extract/*
 *.jsonl
 *.csv
 *.json
+*unigram*
 *.txt
 *__pycache__/
 venv/*
