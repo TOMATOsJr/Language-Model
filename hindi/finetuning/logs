@@ -1,0 +1,14 @@
+python -m hindi.finetuning.train
+/home/tomato/Desktop/Language-Modelling/hindi/finetuning/train.py:128: FutureWarning: `torch.cuda.amp.GradScaler(args...)` is deprecated. Please use `torch.amp.GradScaler('cuda', args...)` instead.
+  scaler = torch.cuda.amp.GradScaler(enabled=(device == "cuda"))
+Initialized from /home/tomato/Desktop/Language-Modelling/hindi/training/checkpoints/best.pt (pretrain step 61040)
+epoch 1/2:  33%|████████████████████████████                                                         | 99/300 [01:16<02:30,  1.33it/s, loss=0.1998, lr=5.00e-05]step 100: val_loss=0.2708 val_ppl=1.31 val_acc=0.9326
+epoch 1/2:  66%|███████████████████████████████████████████████████████▋                            | 199/300 [02:36<01:17,  1.30it/s, loss=0.1204, lr=4.57e-05]step 200: val_loss=0.2041 val_ppl=1.23 val_acc=0.9507
+epoch 1/2: 100%|███████████████████████████████████████████████████████████████████████████████████▋| 299/300 [03:57<00:00,  1.34it/s, loss=0.0233, lr=3.45e-05]step 300: val_loss=0.1572 val_ppl=1.17 val_acc=0.9564
+epoch 1/2: 100%|████████████████████████████████████████████████████████████████████████████████████| 300/300 [04:03<00:00,  1.23it/s, loss=0.0233, lr=3.45e-05]
+epoch 1 end: val_loss=0.1572 val_ppl=1.17 val_acc=0.9564
+epoch 2/2:  33%|████████████████████████████                                                         | 99/300 [01:16<02:21,  1.42it/s, loss=0.0589, lr=2.05e-05]step 400: val_loss=0.1202 val_ppl=1.13 val_acc=0.9686
+epoch 2/2:  66%|███████████████████████████████████████████████████████▋                            | 199/300 [02:39<01:12,  1.40it/s, loss=0.0152, lr=9.30e-06]step 500: val_loss=0.0999 val_ppl=1.11 val_acc=0.9746
+epoch 2/2: 100%|███████████████████████████████████████████████████████████████████████████████████▋| 299/300 [04:02<00:00,  1.30it/s, loss=0.0322, lr=5.00e-06]step 600: val_loss=0.0836 val_ppl=1.09 val_acc=0.9790
+epoch 2/2: 100%|████████████████████████████████████████████████████████████████████████████████████| 300/300 [04:08<00:00,  1.21it/s, loss=0.0322, lr=5.00e-06]
+epoch 2 end: val_loss=0.0836 val_ppl=1.09 val_acc=0.9790

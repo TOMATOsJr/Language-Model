@@ -1,0 +1,9 @@
+python -m nepali.finetuning.train
+/home/tomato/Desktop/Language-Modelling/nepali/finetuning/train.py:128: FutureWarning: `torch.cuda.amp.GradScaler(args...)` is deprecated. Please use `torch.amp.GradScaler('cuda', args...)` instead.
+  scaler = torch.cuda.amp.GradScaler(enabled=(device == "cuda"))
+Initialized from /home/tomato/Desktop/Language-Modelling/nepali/training/checkpoints/best.pt (pretrain step 61000)
+epoch 1/1:  33%|████████████████████████████                                                         | 99/300 [01:07<02:00,  1.67it/s, loss=0.0891, lr=5.00e-05]step 100: val_loss=0.2273 val_ppl=1.26 val_acc=0.9295
+epoch 1/1:  66%|███████████████████████████████████████████████████████▋                            | 199/300 [02:22<01:15,  1.34it/s, loss=0.1180, lr=2.75e-05]step 200: val_loss=0.1252 val_ppl=1.13 val_acc=0.9552
+epoch 1/1: 100%|███████████████████████████████████████████████████████████████████████████████████▋| 299/300 [03:37<00:00,  1.45it/s, loss=0.0723, lr=5.00e-06]step 300: val_loss=0.1039 val_ppl=1.11 val_acc=0.9604
+epoch 1/1: 100%|████████████████████████████████████████████████████████████████████████████████████| 300/300 [03:41<00:00,  1.35it/s, loss=0.0723, lr=5.00e-06]
+epoch 1 end: val_loss=0.1039 val_ppl=1.11 val_acc=0.9604
