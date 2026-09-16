@@ -1,0 +1,20 @@
+{
+  "checkpoint": "nepali/finetuning/checkpoints/best.pt",
+  "device": "cuda",
+  "validation": {
+    "cross_entropy_loss": 3.461571588012695,
+    "perplexity": 31.86701900634842,
+    "bits_per_byte": 0.46122283384546475,
+    "evaluated_tokens": 1000000,
+    "utf8_bytes": 10827721,
+    "bpb_byte_source": "sentencepiece_decoded_token_prefix"
+  },
+  "test": {
+    "cross_entropy_loss": 3.448029331756592,
+    "perplexity": 31.438376612222058,
+    "bits_per_byte": 0.4558835370583135,
+    "evaluated_tokens": 1000000,
+    "utf8_bytes": 10911679,
+    "bpb_byte_source": "sentencepiece_decoded_token_prefix"
+  }
+}

@@ -1,0 +1,20 @@
+{
+  "checkpoint": "hindi/training/checkpoints/best.pt",
+  "device": "cuda",
+  "validation": {
+    "cross_entropy_loss": 2.9746667292175295,
+    "perplexity": 19.583095688310443,
+    "bits_per_byte": 0.4804174551112745,
+    "evaluated_tokens": 1000000,
+    "utf8_bytes": 8932933,
+    "bpb_byte_source": "sentencepiece_decoded_token_prefix"
+  },
+  "test": {
+    "cross_entropy_loss": 3.002460987701416,
+    "perplexity": 20.135028056088245,
+    "bits_per_byte": 0.4851646716439519,
+    "evaluated_tokens": 1000000,
+    "utf8_bytes": 8928176,
+    "bpb_byte_source": "sentencepiece_decoded_token_prefix"
+  }
+}

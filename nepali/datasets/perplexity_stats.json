@@ -1,0 +1,39 @@
+{
+  "input": "cleaned2.jsonl",
+  "model": "sangraha_nepali_sample/nepali_5gram.binary",
+  "output": "cleaned_ppl.jsonl",
+  "documents_scored": 236748,
+  "invalid_or_skipped": 0,
+  "minimum_perplexity": 3.7912522587771256,
+  "maximum_perplexity": 3900455.3851609253,
+  "mean_perplexity": 4948.437229377135,
+  "median_perplexity": 1356.1300510398437,
+  "percentiles": {
+    "1": 37.807740555419066,
+    "5": 236.12155379281967,
+    "10": 382.81410677448997,
+    "25": 705.2135696353002,
+    "50": 1356.1300510398437,
+    "75": 2903.049303579593,
+    "90": 7281.067983851074,
+    "95": 13811.15188571454,
+    "99": 63039.76157422566,
+    "99.5": 107390.69224224768,
+    "99.9": 434021.6702707231
+  },
+  "filter": {
+    "top_percent": 10.0,
+    "bottom_percent": 0.0,
+    "max_perplexity": null,
+    "min_perplexity": 5.0,
+    "top_threshold": 7281.067983851074,
+    "bottom_threshold": null
+  },
+  "results": {
+    "removed_bottom": 0,
+    "removed_top": 23675,
+    "removed_threshold": 5,
+    "total_removed": 23680,
+    "kept": 213068
+  }
+}

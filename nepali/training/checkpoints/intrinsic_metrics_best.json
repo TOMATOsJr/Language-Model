@@ -1,0 +1,20 @@
+{
+  "checkpoint": "nepali/training/checkpoints/best.pt",
+  "device": "cuda",
+  "validation": {
+    "cross_entropy_loss": 3.1676339470214843,
+    "perplexity": 23.751221174238818,
+    "bits_per_byte": 0.4220583248053241,
+    "evaluated_tokens": 1000000,
+    "utf8_bytes": 10827721,
+    "bpb_byte_source": "sentencepiece_decoded_token_prefix"
+  },
+  "test": {
+    "cross_entropy_loss": 3.150160968902588,
+    "perplexity": 23.339821263995493,
+    "bits_per_byte": 0.4165006694054816,
+    "evaluated_tokens": 1000000,
+    "utf8_bytes": 10911679,
+    "bpb_byte_source": "sentencepiece_decoded_token_prefix"
+  }
+}
