@@ -20,7 +20,7 @@ class FinetuneConfig:
 
     max_length: int = 224
     batch_size: int = 16
-    num_epochs: int = 8
+    num_epochs: int = 1
     peak_lr: float = 5e-5
     min_lr: float = 5e-6
     warmup_steps: int = 100
@@ -32,5 +32,5 @@ class FinetuneConfig:
 
     eval_every_steps: int = 100
     log_every_steps: int = 20
-    num_workers: int = 2
+    num_workers: int = 0
     seed: int = 42

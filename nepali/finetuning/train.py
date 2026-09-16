@@ -66,13 +66,27 @@ def evaluate(model, loader, device):
     return mean_loss, math.exp(mean_loss), accuracy
 
 
-def save_checkpoint(path, model, step, val_loss, model_cfg):
+def scheduler_state(step, cfg, total_steps):
+    return {
+        "type": "cosine_decay_with_linear_warmup",
+        "step": step,
+        "warmup_steps": cfg.warmup_steps,
+        "max_steps": total_steps,
+        "peak_lr": cfg.peak_lr,
+        "min_lr": cfg.min_lr,
+    }
+
+def save_checkpoint(path, model, optimizer, scaler, step, val_loss, model_cfg, train_cfg, total_steps):
     torch.save(
         {
             "step": step,
             "model_state_dict": model.state_dict(),
-            "val_loss": val_loss,
+            "optimizer_state_dict": optimizer.state_dict(),
+            "scheduler_state_dict": scheduler_state(step, train_cfg, total_steps),
+            "scaler_state_dict": scaler.state_dict(),
             "model_config": vars(model_cfg),
+            "train_config": vars(train_cfg),
+            "val_loss": val_loss,
         },
         path,
     )
@@ -110,33 +124,54 @@ def train():
         pad_id=pad_id,
     ).to(device)
 
-    checkpoint = torch.load(cfg.init_checkpoint, map_location=device, weights_only=False)
-    model.load_state_dict(checkpoint["model_state_dict"])
-    print(f"Initialized from {cfg.init_checkpoint} (pretrain step {checkpoint.get('step')})")
-
     optimizer = build_optimizer(model, cfg)
+    scaler = torch.cuda.amp.GradScaler(enabled=(device == "cuda"))
     total_steps = len(train_loader) * cfg.num_epochs
 
     cfg.checkpoint_dir.mkdir(parents=True, exist_ok=True)
+    latest_checkpoint_path = cfg.checkpoint_dir / "latest.pt"
+
     best_val_loss = float("inf")
     step = 0
+    start_epoch = 1
 
-    for epoch in range(1, cfg.num_epochs + 1):
+    if latest_checkpoint_path.exists():
+        checkpoint = torch.load(latest_checkpoint_path, map_location=device, weights_only=False)
+        model.load_state_dict(checkpoint["model_state_dict"])
+        optimizer.load_state_dict(checkpoint["optimizer_state_dict"])
+        if "scaler_state_dict" in checkpoint:
+            scaler.load_state_dict(checkpoint["scaler_state_dict"])
+        step = checkpoint["step"]
+        best_val_loss = checkpoint.get("val_loss", float("inf"))
+        start_epoch = (step // len(train_loader)) + 1
+        print(f"Resumed from {latest_checkpoint_path} at step {step}")
+    else:
+        checkpoint = torch.load(cfg.init_checkpoint, map_location=device, weights_only=False)
+        model.load_state_dict(checkpoint["model_state_dict"])
+        print(f"Initialized from {cfg.init_checkpoint} (pretrain step {checkpoint.get('step')})")
+
+    for epoch in range(start_epoch, cfg.num_epochs + 1):
         progress = tqdm(train_loader, desc=f"epoch {epoch}/{cfg.num_epochs}")
-        for input_ids, labels in progress:
+        for batch_idx, (input_ids, labels) in enumerate(progress):
+            if epoch == start_epoch and batch_idx < (step % len(train_loader)):
+                continue  # Skip already processed batches in the resumed epoch
+
             step += 1
             lr = lr_at_step(step, cfg.warmup_steps, total_steps, cfg.peak_lr, cfg.min_lr)
             for group in optimizer.param_groups:
                 group["lr"] = lr
 
             input_ids, labels = input_ids.to(device), labels.to(device)
-            logits = model(input_ids)
-            loss = shifted_loss(logits, labels)
+            with torch.autocast(device_type="cuda" if device == "cuda" else "cpu", enabled=device == "cuda"):
+                logits = model(input_ids)
+                loss = shifted_loss(logits, labels)
 
             optimizer.zero_grad(set_to_none=True)
-            loss.backward()
+            scaler.scale(loss).backward()
+            scaler.unscale_(optimizer)
             torch.nn.utils.clip_grad_norm_(model.parameters(), cfg.grad_clip_norm)
-            optimizer.step()
+            scaler.step(optimizer)
+            scaler.update()
 
             if step % cfg.log_every_steps == 0:
                 progress.set_postfix(loss=f"{loss.item():.4f}", lr=f"{lr:.2e}")
@@ -146,14 +181,15 @@ def train():
                 print(f"step {step}: val_loss={val_loss:.4f} val_ppl={val_ppl:.2f} val_acc={val_acc:.4f}")
                 if val_loss < best_val_loss:
                     best_val_loss = val_loss
-                    save_checkpoint(cfg.checkpoint_dir / "best.pt", model, step, val_loss, model_cfg)
+                    save_checkpoint(cfg.checkpoint_dir / "best.pt", model, optimizer, scaler, step, val_loss, model_cfg, cfg, total_steps)
 
         val_loss, val_ppl, val_acc = evaluate(model, val_loader, device)
         print(f"epoch {epoch} end: val_loss={val_loss:.4f} val_ppl={val_ppl:.2f} val_acc={val_acc:.4f}")
-        save_checkpoint(cfg.checkpoint_dir / f"epoch_{epoch:02d}.pt", model, step, val_loss, model_cfg)
+        save_checkpoint(cfg.checkpoint_dir / f"epoch_{epoch:02d}.pt", model, optimizer, scaler, step, val_loss, model_cfg, cfg, total_steps)
+        save_checkpoint(cfg.checkpoint_dir / "latest.pt", model, optimizer, scaler, step, val_loss, model_cfg, cfg, total_steps)
         if val_loss < best_val_loss:
             best_val_loss = val_loss
-            save_checkpoint(cfg.checkpoint_dir / "best.pt", model, step, val_loss, model_cfg)
+            save_checkpoint(cfg.checkpoint_dir / "best.pt", model, optimizer, scaler, step, val_loss, model_cfg, cfg, total_steps)
 
 
 if __name__ == "__main__":
