@@ -8,6 +8,7 @@ from pathlib import Path
 
 import sentencepiece as spm
 import torch
+from tqdm import tqdm
 
 from nepali.finetuning.config import FinetuneConfig
 from nepali.finetuning.generate import generate_answer, load_model
@@ -34,7 +35,7 @@ def main():
     results = []
     with cfg.test_jsonl.open("r", encoding="utf-8") as handle:
         records = [json.loads(line) for line in handle if line.strip()]
-    for record in records:
+    for record in tqdm(records, desc="Evaluating"):
         generated = generate_answer(
             model, tokenizer, build_prompt(record), args.max_new_tokens,
             cfg.max_length, device, temperature=1e-5 if args.greedy else 0.7, top_p=1.0 if args.greedy else 0.9,
