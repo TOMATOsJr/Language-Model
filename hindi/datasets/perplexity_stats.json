@@ -1,0 +1,39 @@
+{
+  "input": "cleaned.jsonl",
+  "model": "sangraha_hindi_sample/sangraha_5gram.binary",
+  "output": "cleaned_ppl.jsonl",
+  "documents_scored": 280245,
+  "invalid_or_skipped": 0,
+  "minimum_perplexity": 2.7589616012337776,
+  "maximum_perplexity": 10089125.432342652,
+  "mean_perplexity": 11283.089480447581,
+  "median_perplexity": 1029.2511262067653,
+  "percentiles": {
+    "1": 97.8482708482854,
+    "5": 183.84024713604467,
+    "10": 262.69019892951394,
+    "25": 478.66976482443545,
+    "50": 1029.2511262067653,
+    "75": 2818.410120741579,
+    "90": 10538.579439156549,
+    "95": 34610.193040260514,
+    "99": 308546.67498292954,
+    "99.5": 404011.65758475824,
+    "99.9": 733961.1459152831
+  },
+  "filter": {
+    "top_percent": 25.0,
+    "bottom_percent": 0.0,
+    "max_perplexity": null,
+    "min_perplexity": 5.0,
+    "top_threshold": 2818.410120741579,
+    "bottom_threshold": null
+  },
+  "results": {
+    "removed_bottom": 0,
+    "removed_top": 70062,
+    "removed_threshold": 10,
+    "total_removed": 70072,
+    "kept": 210173
+  }
+}

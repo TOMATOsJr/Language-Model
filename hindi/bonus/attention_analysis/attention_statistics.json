@@ -1,0 +1,483 @@
+{
+  "language": "hindi",
+  "checkpoint": "hindi/bonus/checkpoints/best.pt",
+  "tokenizer": "hindi/tokenizers/unigram_8000.model",
+  "device": "cuda",
+  "prompt": "भारत में भाषा मॉडल प्राकृतिक भाषा को समझने और उत्पन्न करने में सहायक हो सकते हैं।",
+  "token_ids": [
+    392,
+    276,
+    916,
+    1898,
+    2471,
+    916,
+    280,
+    2680,
+    278,
+    1521,
+    304,
+    276,
+    2190,
+    299,
+    395,
+    282,
+    6
+  ],
+  "token_labels": [
+    " भारत",
+    " में",
+    " भाषा",
+    " मॉडल",
+    " प्राकृतिक",
+    " भाषा",
+    " को",
+    " समझने",
+    " और",
+    " उत्पन्न",
+    " करने",
+    " में",
+    " सहायक",
+    " हो",
+    " सकते",
+    " हैं",
+    "।"
+  ],
+  "selected_layers": [
+    1,
+    12
+  ],
+  "head_statistics": [
+    {
+      "layer": 1,
+      "head": 1,
+      "mean_entropy": 1.8104400634765625,
+      "mean_attention_distance": 4.764150619506836
+    },
+    {
+      "layer": 1,
+      "head": 2,
+      "mean_entropy": 2.0057992935180664,
+      "mean_attention_distance": 4.268444061279297
+    },
+    {
+      "layer": 1,
+      "head": 3,
+      "mean_entropy": 1.567097544670105,
+      "mean_attention_distance": 2.447162628173828
+    },
+    {
+      "layer": 1,
+      "head": 4,
+      "mean_entropy": 2.0416011810302734,
+      "mean_attention_distance": 4.183936595916748
+    },
+    {
+      "layer": 1,
+      "head": 5,
+      "mean_entropy": 1.972174882888794,
+      "mean_attention_distance": 4.302465438842773
+    },
+    {
+      "layer": 1,
+      "head": 6,
+      "mean_entropy": 1.8031253814697266,
+      "mean_attention_distance": 3.326287269592285
+    },
+    {
+      "layer": 2,
+      "head": 1,
+      "mean_entropy": 1.6849701404571533,
+      "mean_attention_distance": 4.464234352111816
+    },
+    {
+      "layer": 2,
+      "head": 2,
+      "mean_entropy": 1.108642339706421,
+      "mean_attention_distance": 1.3826137781143188
+    },
+    {
+      "layer": 2,
+      "head": 3,
+      "mean_entropy": 1.9143283367156982,
+      "mean_attention_distance": 3.7625017166137695
+    },
+    {
+      "layer": 2,
+      "head": 4,
+      "mean_entropy": 1.9136908054351807,
+      "mean_attention_distance": 4.844648838043213
+    },
+    {
+      "layer": 2,
+      "head": 5,
+      "mean_entropy": 1.4063208103179932,
+      "mean_attention_distance": 2.5209405422210693
+    },
+    {
+      "layer": 2,
+      "head": 6,
+      "mean_entropy": 1.7642912864685059,
+      "mean_attention_distance": 3.099210262298584
+    },
+    {
+      "layer": 3,
+      "head": 1,
+      "mean_entropy": 1.7551541328430176,
+      "mean_attention_distance": 2.837613582611084
+    },
+    {
+      "layer": 3,
+      "head": 2,
+      "mean_entropy": 1.918201208114624,
+      "mean_attention_distance": 4.605432033538818
+    },
+    {
+      "layer": 3,
+      "head": 3,
+      "mean_entropy": 1.5628468990325928,
+      "mean_attention_distance": 3.4048335552215576
+    },
+    {
+      "layer": 3,
+      "head": 4,
+      "mean_entropy": 2.0533769130706787,
+      "mean_attention_distance": 4.356820106506348
+    },
+    {
+      "layer": 3,
+      "head": 5,
+      "mean_entropy": 1.9046803712844849,
+      "mean_attention_distance": 4.286221504211426
+    },
+    {
+      "layer": 3,
+      "head": 6,
+      "mean_entropy": 1.9524348974227905,
+      "mean_attention_distance": 4.625102519989014
+    },
+    {
+      "layer": 4,
+      "head": 1,
+      "mean_entropy": 1.9095735549926758,
+      "mean_attention_distance": 4.288388729095459
+    },
+    {
+      "layer": 4,
+      "head": 2,
+      "mean_entropy": 1.94907546043396,
+      "mean_attention_distance": 4.5142292976379395
+    },
+    {
+      "layer": 4,
+      "head": 3,
+      "mean_entropy": 0.932801365852356,
+      "mean_attention_distance": 1.5729953050613403
+    },
+    {
+      "layer": 4,
+      "head": 4,
+      "mean_entropy": 1.8208211660385132,
+      "mean_attention_distance": 3.671541213989258
+    },
+    {
+      "layer": 4,
+      "head": 5,
+      "mean_entropy": 1.9122822284698486,
+      "mean_attention_distance": 4.574404716491699
+    },
+    {
+      "layer": 4,
+      "head": 6,
+      "mean_entropy": 1.9767080545425415,
+      "mean_attention_distance": 4.692446231842041
+    },
+    {
+      "layer": 5,
+      "head": 1,
+      "mean_entropy": 1.8056859970092773,
+      "mean_attention_distance": 5.716042518615723
+    },
+    {
+      "layer": 5,
+      "head": 2,
+      "mean_entropy": 1.644789695739746,
+      "mean_attention_distance": 2.56916880607605
+    },
+    {
+      "layer": 5,
+      "head": 3,
+      "mean_entropy": 1.7062045335769653,
+      "mean_attention_distance": 5.4288482666015625
+    },
+    {
+      "layer": 5,
+      "head": 4,
+      "mean_entropy": 1.922987937927246,
+      "mean_attention_distance": 4.954398155212402
+    },
+    {
+      "layer": 5,
+      "head": 5,
+      "mean_entropy": 1.8206111192703247,
+      "mean_attention_distance": 4.745182037353516
+    },
+    {
+      "layer": 5,
+      "head": 6,
+      "mean_entropy": 1.9894758462905884,
+      "mean_attention_distance": 5.112895488739014
+    },
+    {
+      "layer": 6,
+      "head": 1,
+      "mean_entropy": 1.4631823301315308,
+      "mean_attention_distance": 5.69638204574585
+    },
+    {
+      "layer": 6,
+      "head": 2,
+      "mean_entropy": 1.6767390966415405,
+      "mean_attention_distance": 2.4622397422790527
+    },
+    {
+      "layer": 6,
+      "head": 3,
+      "mean_entropy": 0.900592029094696,
+      "mean_attention_distance": 1.5119707584381104
+    },
+    {
+      "layer": 6,
+      "head": 4,
+      "mean_entropy": 1.8030195236206055,
+      "mean_attention_distance": 5.225088119506836
+    },
+    {
+      "layer": 6,
+      "head": 5,
+      "mean_entropy": 1.7562003135681152,
+      "mean_attention_distance": 5.24945592880249
+    },
+    {
+      "layer": 6,
+      "head": 6,
+      "mean_entropy": 1.2736256122589111,
+      "mean_attention_distance": 3.567540407180786
+    },
+    {
+      "layer": 7,
+      "head": 1,
+      "mean_entropy": 0.21480759978294373,
+      "mean_attention_distance": 0.13343636691570282
+    },
+    {
+      "layer": 7,
+      "head": 2,
+      "mean_entropy": 0.6658158898353577,
+      "mean_attention_distance": 1.7199995517730713
+    },
+    {
+      "layer": 7,
+      "head": 3,
+      "mean_entropy": 0.8038257956504822,
+      "mean_attention_distance": 2.465014934539795
+    },
+    {
+      "layer": 7,
+      "head": 4,
+      "mean_entropy": 0.7856770753860474,
+      "mean_attention_distance": 1.958968162536621
+    },
+    {
+      "layer": 7,
+      "head": 5,
+      "mean_entropy": 1.1741502285003662,
+      "mean_attention_distance": 2.129271984100342
+    },
+    {
+      "layer": 7,
+      "head": 6,
+      "mean_entropy": 1.4140872955322266,
+      "mean_attention_distance": 6.644463539123535
+    },
+    {
+      "layer": 8,
+      "head": 1,
+      "mean_entropy": 0.8023769855499268,
+      "mean_attention_distance": 6.48587703704834
+    },
+    {
+      "layer": 8,
+      "head": 2,
+      "mean_entropy": 0.7441117763519287,
+      "mean_attention_distance": 3.11635684967041
+    },
+    {
+      "layer": 8,
+      "head": 3,
+      "mean_entropy": 1.0915179252624512,
+      "mean_attention_distance": 3.5985605716705322
+    },
+    {
+      "layer": 8,
+      "head": 4,
+      "mean_entropy": 1.0992494821548462,
+      "mean_attention_distance": 2.1735966205596924
+    },
+    {
+      "layer": 8,
+      "head": 5,
+      "mean_entropy": 0.9056195020675659,
+      "mean_attention_distance": 1.561275839805603
+    },
+    {
+      "layer": 8,
+      "head": 6,
+      "mean_entropy": 0.9318187236785889,
+      "mean_attention_distance": 2.2475719451904297
+    },
+    {
+      "layer": 9,
+      "head": 1,
+      "mean_entropy": 0.8242205381393433,
+      "mean_attention_distance": 1.022947907447815
+    },
+    {
+      "layer": 9,
+      "head": 2,
+      "mean_entropy": 0.9886006712913513,
+      "mean_attention_distance": 4.623767375946045
+    },
+    {
+      "layer": 9,
+      "head": 3,
+      "mean_entropy": 1.6100144386291504,
+      "mean_attention_distance": 4.591734886169434
+    },
+    {
+      "layer": 9,
+      "head": 4,
+      "mean_entropy": 0.15382808446884155,
+      "mean_attention_distance": 0.18955542147159576
+    },
+    {
+      "layer": 9,
+      "head": 5,
+      "mean_entropy": 0.49771109223365784,
+      "mean_attention_distance": 1.4939606189727783
+    },
+    {
+      "layer": 9,
+      "head": 6,
+      "mean_entropy": 1.5930176973342896,
+      "mean_attention_distance": 5.291906833648682
+    },
+    {
+      "layer": 10,
+      "head": 1,
+      "mean_entropy": 1.2213878631591797,
+      "mean_attention_distance": 1.8623852729797363
+    },
+    {
+      "layer": 10,
+      "head": 2,
+      "mean_entropy": 1.0337367057800293,
+      "mean_attention_distance": 4.207472801208496
+    },
+    {
+      "layer": 10,
+      "head": 3,
+      "mean_entropy": 1.5529429912567139,
+      "mean_attention_distance": 3.444936513900757
+    },
+    {
+      "layer": 10,
+      "head": 4,
+      "mean_entropy": 1.0979726314544678,
+      "mean_attention_distance": 3.858487129211426
+    },
+    {
+      "layer": 10,
+      "head": 5,
+      "mean_entropy": 1.0325658321380615,
+      "mean_attention_distance": 2.4292664527893066
+    },
+    {
+      "layer": 10,
+      "head": 6,
+      "mean_entropy": 1.7730516195297241,
+      "mean_attention_distance": 4.710757732391357
+    },
+    {
+      "layer": 11,
+      "head": 1,
+      "mean_entropy": 0.8855913877487183,
+      "mean_attention_distance": 3.2537975311279297
+    },
+    {
+      "layer": 11,
+      "head": 2,
+      "mean_entropy": 1.3323957920074463,
+      "mean_attention_distance": 4.662128925323486
+    },
+    {
+      "layer": 11,
+      "head": 3,
+      "mean_entropy": 0.7864896059036255,
+      "mean_attention_distance": 4.681761741638184
+    },
+    {
+      "layer": 11,
+      "head": 4,
+      "mean_entropy": 1.180688500404358,
+      "mean_attention_distance": 5.201583385467529
+    },
+    {
+      "layer": 11,
+      "head": 5,
+      "mean_entropy": 1.7189701795578003,
+      "mean_attention_distance": 5.2265496253967285
+    },
+    {
+      "layer": 11,
+      "head": 6,
+      "mean_entropy": 1.2734192609786987,
+      "mean_attention_distance": 3.2161388397216797
+    },
+    {
+      "layer": 12,
+      "head": 1,
+      "mean_entropy": 1.7195117473602295,
+      "mean_attention_distance": 4.04586124420166
+    },
+    {
+      "layer": 12,
+      "head": 2,
+      "mean_entropy": 1.8207621574401855,
+      "mean_attention_distance": 4.610410213470459
+    },
+    {
+      "layer": 12,
+      "head": 3,
+      "mean_entropy": 1.7588917016983032,
+      "mean_attention_distance": 3.9511590003967285
+    },
+    {
+      "layer": 12,
+      "head": 4,
+      "mean_entropy": 1.5803910493850708,
+      "mean_attention_distance": 2.7295217514038086
+    },
+    {
+      "layer": 12,
+      "head": 5,
+      "mean_entropy": 1.7495965957641602,
+      "mean_attention_distance": 4.521566390991211
+    },
+    {
+      "layer": 12,
+      "head": 6,
+      "mean_entropy": 1.7512552738189697,
+      "mean_attention_distance": 4.985317707061768
+    }
+  ]
+}
